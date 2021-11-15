@@ -1,0 +1,8 @@
+<mat-card class="card">
+    <mat-card-header>
+        <div mat-card-avatar class="header-image"></div>
+        <mat-card-title>{{ photo.date | date: 'yyyy-MM-dd':'UTC'}} / {{ photo.rover }}</mat-card-title>
+        <mat-card-subtitle>sol {{ photo.sol }} / {{ photo.cameraName }}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="photo.src">
+</mat-card>

@@ -1,0 +1,32 @@
+
+ :host {
+    display: flex;
+
+    mat-label {
+        padding-right: 10px;
+        font-size: 1rem;
+    }
+ }
+ 
+ .sol-menu {
+    padding: 5px;
+    background-color: white;
+    border-radius: 10px;
+    max-height: 200px;
+ }
+
+ .history-btn {
+    display: flex;
+    margin-left: 1rem;
+    border-radius: 100%;
+    background: rgba(0, 0, 0, 0.01);
+    cursor: pointer;
+
+    mat-icon {
+        font-size: 1.2rem;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }
+ }

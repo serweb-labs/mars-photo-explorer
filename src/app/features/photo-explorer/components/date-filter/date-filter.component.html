@@ -1,0 +1,78 @@
+<mat-label>Date filters</mat-label>
+<mat-chip-list>
+    <mat-chip
+        [selected]="isDateFilter('date')"
+        (click)="setDateFilterDate()">
+        Date <span *ngIf="isDateFilter('date')">: {{ state.date | date: 'yyyy-MM-dd':'UTC' }}</span>
+        <mat-form-field style="visibility: hidden; width: 1px;">
+            <input matInput [matDatepicker]="picker" [formControl]="filterByEarthDate">
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        
+    </mat-chip>
+    <mat-chip [selected]="isDateFilter('today')" (click)="setDateFilter('today')">
+        Today
+    </mat-chip>
+    <mat-chip
+        [selected]="isDateFilter('sol')"
+        (click)="setDateFilterSol()"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin">
+        Sol <span *ngIf="isDateFilter('sol')">: {{ filterBySolDate.value }}</span> 
+        <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="trigger"
+            [cdkConnectedOverlayOpen]="showSolOverlay"
+            [cdkConnectedOverlayHasBackdrop]="true"
+            (backdropClick)="showSolOverlay = false; undoDateFilter()">
+            <div class="sol-menu">
+                <div>
+                    <button mat-button (click)="filterBySolDate.setValue(filterBySolDate.value-1)">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                    <mat-slider
+                        thumbLabel
+                        min="1"
+                        [max]="state.maxSol"
+                        step="1"
+                        [value]="state.maxSol"
+                        [formControl]="filterBySolDate"></mat-slider>
+                    <button mat-button (click)="filterBySolDate.setValue(filterBySolDate.value+1)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <button 
+                        mat-button color="primary"
+                        (click)="confirmDateFilterSol()">ok</button>
+                    <button
+                        mat-button
+                        (click)="cancelDateFilterSol()">cancel</button>
+                </div>
+            </div>
+        </ng-template>            
+    </mat-chip>
+    <mat-chip
+        [selected]="isDateFilter('latest')"
+        (click)="setDateFilterLatest()">
+        Latest
+    </mat-chip>
+    <mat-chip [matMenuTriggerFor]="menu">
+        <mat-menu #menu="matMenu">
+            <ng-container *ngFor="let s of state.savedFilters">
+                <button
+                    mat-menu-item 
+                    *ngIf="s.type === 'date'"
+                    (click)="setSavedFilter(s)">
+                    {{ s.type }}: {{ s.value | date: 'yyyy-MM-dd':'UTC'}}
+                </button>
+                <button
+                    mat-menu-item
+                    *ngIf="s.type === 'sol'"
+                    (click)="setSavedFilter(s)">
+                    {{ s.type }}: {{ s.value }}
+                </button>
+            </ng-container>
+        </mat-menu>
+        <mat-icon aria-hidden="false" aria-label="home icon">history</mat-icon>
+
+    </mat-chip>
+</mat-chip-list>

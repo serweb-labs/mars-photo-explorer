@@ -1,0 +1,89 @@
+<mat-card>
+    <mat-card-actions>
+        <div class="controls">            
+            <div>
+                <mat-form-field>
+                    <mat-label>Choose an Rover</mat-label>
+                    <mat-select [formControl]="filterByRover">
+                        <mat-option value="curiosity">Curiosity</mat-option>
+                        <mat-option value="opportunity">Opportunity</mat-option>
+                        <mat-option value="spirit">Spirit</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div *ngIf="isState(stateName.Results)">
+                <mat-form-field>
+                    <mat-label>Cameras</mat-label>
+                    <mat-select [formControl]="filterByCamera" >
+                        <mat-option
+                            [value]="null">
+                            all
+                        </mat-option>
+                        <mat-option
+                            *ngFor="let camera of state.data.cameras" 
+                            [value]="camera.id">
+                            {{ camera.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-card-actions>
+</mat-card>
+
+<mat-toolbar class="search-tools"  *ngIf="state.rover">
+    <div>
+        <app-date-filter
+            [fromState]="state"
+            (date)="filterByDate($event)"
+            (sol)="filterBySol($event)"
+            (latest)="filterByLatest()"
+            (saved)="filterBySavedFilter($event)">
+        </app-date-filter>
+    </div>
+    <div *ngIf="state.name == stateName.Results" class="results">
+        <div>
+            <button  mat-button (click)="prevPage()" [disabled]="state.page === 1">prev</button>
+            Page {{ state.page }}
+            <button [disabled]="state.data.photos.length < 25" mat-button (click)="nextPage()">next</button>
+        </div>
+    </div>
+</mat-toolbar>
+
+<div class="photos-container">
+    <div class="loading" *ngIf="isState(stateName.Loading)">
+        <mat-spinner></mat-spinner>
+    </div>
+    
+    <ng-container *ngIf="isState(stateName.UnknownError)">
+        <div class="no-results">
+            Ups! something went wrong.
+        </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isState(stateName.ConnectionError)">
+        <div class="no-results">
+            Ups! it seems that your connection is failing.
+        </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isState(stateName.RateError)">
+        <div class="no-results">
+            Ups!, NASA API quota looks like it's over, try later.
+        </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isState(stateName.Initial)">
+        <div class="no-results">
+            Please, select a Mars Rover in the select widget
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isState(stateName.Results)">
+        <div class="no-results" *ngIf="state.data.photos.length == 0">
+            Sorry, no results found, try using "latest" filter or a different date
+        </div>
+        <app-photo *ngFor="let photo of state.data.photos" [photo]="photo"></app-photo>
+    </ng-container>
+</div>
+
+
